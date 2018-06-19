@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import * as World from './world.ts';
-import {Controls} from './controls.ts';
+import * as World from './world';
+import {Controls} from './controls';
 
 const stats = require('../lib/stat.min.js')();
 stats.showPanel( 0 );
