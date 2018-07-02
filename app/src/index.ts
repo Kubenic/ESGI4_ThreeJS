@@ -1,5 +1,7 @@
 import * as THREE from 'three';
-import { Controls } from './controls';
+import * as World from './world';
+import {Controls} from './controls';
+import {Actions} from "./actions";
 import GrassBlock from './classes/grass';
 
 const stats = require('../lib/stat.min.js')();
@@ -43,8 +45,11 @@ for (let b = 0; b < blocks.length; b++) {
     blocks[b].addToScene(scene)
 }
 
+const actions = new Actions(THREE);
+
 function update() {
     controls.updateControls(clock);
+    actions.update(camera,scene);
 }
 
 
