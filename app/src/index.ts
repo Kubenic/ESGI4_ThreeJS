@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import * as World from './world';
 import {Controls} from './controls';
+import {Actions} from "./actions";
 
 const stats = require('../lib/stat.min.js')();
 stats.showPanel( 0 );
@@ -25,8 +26,11 @@ world.setBoxSize(50,50,50);
 
 world.generate(THREE, scene);
 
+const actions = new Actions(THREE);
+
 function update() {
     controls.updateControls(clock);
+    actions.update(camera,scene);
 }
 
 
