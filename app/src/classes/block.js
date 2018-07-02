@@ -44,7 +44,6 @@ export default class Block {
         );
         this.wireframe.visible = false;
         this.mesh.add(this.wireframe);
-        console.log(this.mesh.geometry)
     }
 
     select() {

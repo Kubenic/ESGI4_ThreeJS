@@ -4,6 +4,7 @@ export class World {
     public cellWidth: number;
     public cellHeight: number;
     public cellThickness: number;
+    public basic_block_geometry: any;
 
     constructor(){
     }
@@ -20,6 +21,7 @@ export class World {
     }
 
     generate(THREE : any, scene: any) {
+        this.basic_block_geometry = new THREE.BoxGeometry(this.cellWidth,this.cellHeight,this.cellThickness);
         let pointer = new THREE.Object3D();
         let ArrayOfCubes = [];
 
@@ -36,9 +38,19 @@ export class World {
                 let b = Math.random() * (rgb.max - rgb.min) + rgb.min;
                 let color = new THREE.Color( r,g,b );
 
-                let cube = new THREE.Mesh(new THREE.BoxGeometry(this.cellWidth,this.cellHeight,this.cellThickness), new THREE.MeshBasicMaterial({ color: color}));
+                let cube = new THREE.Mesh(this.basic_block_geometry, new THREE.MeshBasicMaterial({ color: color}));
                 cube.position.x = HIndex*this.cellWidth;
                 cube.position.z = WIndex*this.cellHeight;
+
+                let frameScale = 1.01;
+                let cubeWireframe = new THREE.LineSegments(
+                    new THREE.EdgesGeometry(this.basic_block_geometry.clone().scale(frameScale, frameScale, frameScale)),
+                    new THREE.LineBasicMaterial({ color: 0x333333, linewidth: 2 })
+                );
+
+                cubeWireframe.visible = false;
+                cube.add(cubeWireframe);
+
                 line.push(cube);
             }
             ArrayOfCubes.push(line);

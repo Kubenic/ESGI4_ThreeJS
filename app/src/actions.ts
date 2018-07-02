@@ -2,6 +2,8 @@ export class Actions {
     private THREE : any;
     private mouse : any;
     private raycaster: any;
+    private target: any;
+
     constructor(THREE) {
         this.THREE = THREE;
         this.raycaster = new this.THREE.Raycaster();
@@ -21,21 +23,30 @@ export class Actions {
     }
 
     update (camera: any ,scene: any) {
-
         this.raycaster.setFromCamera( this.mouse, camera );
-        //console.log(scene.children);
-        // calculate objects intersecting the picking ray
-        var intersects = this.raycaster.intersectObjects( scene.children[1].children );
+        let blocks = scene.children[1].children;
 
-        if(intersects.length > 0 ){
-            console.log(intersects[0]);
-            console.log(intersects[0].object.uuid);
-            console.log(intersects[0].faceIndex);
+        if (blocks) {
+            // calculate objects intersecting the picking ray
+            let hits = this.raycaster.intersectObjects( blocks );
+            if(hits.length > 0 ){
+                let hit = hits[0];
+                let wireframe = hit.object.children[0];
+
+                //If the targeted wireframe is the same as the last, return
+                if (this.target) {
+                    if (this.target.uuid == wireframe.uuid) {
+                        return;
+                    }
+
+                    this.target.visible = false;
+                }
+
+                wireframe.visible = true;
+                this.target = wireframe;
+            }
+
         }
-       /* for ( var i = 0; i < intersects.length; i++ ) {
 
-            intersects[ i ].object.material.color.set( 0xff0000 );
-
-        }*/
     }
 }
