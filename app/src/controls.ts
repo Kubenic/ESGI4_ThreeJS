@@ -36,11 +36,13 @@ export class Controls {
 
     }
 
-    listeningPointerLock(){
+    listeningPointerLock(e){
+        e.preventDefault();
         this.isPointerLocked = !this.isPointerLocked;
 
     }
     mouseTracker(e){
+        e.preventDefault();
         if(this.isPointerLocked){
 
             const movementX = e.movementX;
@@ -52,8 +54,8 @@ export class Controls {
             this.pitchObject.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, this.pitchObject.rotation.x));
         }
     }
-    enablePointerLock(){
-
+    enablePointerLock(e){
+        e.preventDefault();
         this.renderer.domElement.requestPointerLock();
         document.addEventListener('pointerlockchange', this.listeningPointerLock.bind(this), false);
         document.addEventListener('mozpointerlockchange', this.listeningPointerLock.bind(this), false);
@@ -129,7 +131,7 @@ export class Controls {
             }
 
             dir.normalize();
-            const speed = 1000;
+            const speed = 300;
 
             this.yawObject.translateX(dir.x * delta * speed);
             this.yawObject.translateZ(dir.z * delta * speed);

@@ -21,6 +21,7 @@ export class Actions {
 
 
     onMouseMove( event ) {
+        event.preventDefault();
         // calculate mouse position in normalized device coordinates
         // (-1 to +1) for both components
         this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
@@ -29,6 +30,7 @@ export class Actions {
     }
 
     onMouseClick( event ) {
+        event.preventDefault();
         if(this.controls.isPointerLocked){
             switch(event.which) {
                 case 1 :
@@ -92,7 +94,6 @@ export class Actions {
     update (camera: any ,scene: any) {
         if(this.blocksToRemove.length > 0 ){
             this.blocksToRemove.forEach((cube: any) => {
-                //scene.children.remove(cube);
                scene.children.forEach((child) => {
                    console.log(child);
                     child.remove(cube.object);
@@ -103,7 +104,6 @@ export class Actions {
         if(this.blocksToAdd.length > 0){
             this.blocksToAdd.forEach((cube: object) =>{
                 scene.children.forEach((child) => {
-                    //console.log(child);
                     if(child.children.length > 100) {
                         console.log(child.children.length);
                         child.add(cube);
@@ -125,7 +125,7 @@ export class Actions {
 
                 //If the targeted wireframe is the same as the last, return
                 if (this.target) {
-                    if (this.target.uuid == wireframe.uuid) {
+                    if (this.target.uuid == wireframe.uuid && hit.faceIndex === this.hit.faceIndex) {
                         return;
                     }
                     this.hit = hit;
