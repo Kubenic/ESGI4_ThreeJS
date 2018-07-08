@@ -3,14 +3,22 @@ export class Actions {
     private mouse : any;
     private raycaster: any;
     private target: any;
+    private controls: any;
+    private hit: any;
+    private world: any;
+    public blocksToAdd: Array<object> = [];
+    public blocksToRemove: Array<object> = [];
 
-    constructor(THREE) {
+    constructor(THREE, controls, world) {
         this.THREE = THREE;
+        this.controls = controls;
         this.raycaster = new this.THREE.Raycaster();
         this.mouse = new this.THREE.Vector2();
-
-        window.addEventListener('mousemove',this.onMouseMove.bind(this),false)
+        this.world = world;
+        window.addEventListener('mousemove',this.onMouseMove.bind(this),false);
+        window.addEventListener('click',this.onMouseClick.bind(this), false)
     }
+
 
     onMouseMove( event ) {
         // calculate mouse position in normalized device coordinates
@@ -20,8 +28,92 @@ export class Actions {
 
     }
 
+    onMouseClick( event ) {
+        if(this.controls.isPointerLocked){
+            switch(event.which) {
+                case 1 :
+                    console.log('ONE');
+                    this.eraseBlock();
+                    break;
+                case 3 :
+                    this.createBlock();
+                    break;
+            }
+        }
+    }
+
+    createBlock(){
+        console.log(this.hit);
+        console.log(this.hit.faceIndex);
+        let cube = this.world.createBlock(this.THREE);
+
+        switch( this.hit.faceIndex ){
+            case 0 :
+            case 1 :
+                cube.position.x = this.hit.object.position.x + this.hit.object.geometry.parameters.width;
+                cube.position.z = this.hit.object.position.z ;
+                cube.position.y = this.hit.object.position.y ;
+                break;
+            case 2 :
+            case 3 :
+                cube.position.x = this.hit.object.position.x - this.hit.object.geometry.parameters.width;
+                cube.position.z = this.hit.object.position.z ;
+                cube.position.y = this.hit.object.position.y ;
+                break;
+            case 4 :
+            case 5 :
+                cube.position.x = this.hit.object.position.x ;
+                cube.position.z = this.hit.object.position.z ;
+                cube.position.y = this.hit.object.position.y + this.hit.object.geometry.parameters.height;
+                break;
+            case 8 :
+            case 9 :
+                cube.position.x = this.hit.object.position.x ;
+                cube.position.z = this.hit.object.position.z  + this.hit.object.geometry.parameters.width;
+                cube.position.y = this.hit.object.position.y ;
+                break;
+            case 10 :
+            case 11 :
+                cube.position.x = this.hit.object.position.x ;
+                cube.position.z = this.hit.object.position.z  - this.hit.object.geometry.parameters.width;
+                cube.position.y = this.hit.object.position.y ;
+        }
+
+        this.blocksToAdd.push(cube);
+
+
+    }
+
+    eraseBlock(){
+        this.blocksToRemove.push(this.hit);
+        // console.log(this.blocksToRemove);
+    }
+
     update (camera: any ,scene: any) {
-        this.raycaster.setFromCamera( this.mouse, camera );
+        if(this.blocksToRemove.length > 0 ){
+            this.blocksToRemove.forEach((cube: any) => {
+                //scene.children.remove(cube);
+               scene.children.forEach((child) => {
+                   console.log(child);
+                    child.remove(cube.object);
+               });
+            });
+            this.blocksToRemove = [];
+        }
+        if(this.blocksToAdd.length > 0){
+            this.blocksToAdd.forEach((cube: object) =>{
+                scene.children.forEach((child) => {
+                    //console.log(child);
+                    if(child.children.length > 100) {
+                        console.log(child.children.length);
+                        child.add(cube);
+                    }
+                });
+
+            });
+            this.blocksToAdd = [];
+        }
+        this.raycaster.setFromCamera( new this.THREE.Vector2(), camera );
         let blocks = scene.children[1].children;
 
         if (blocks) {
@@ -36,7 +128,7 @@ export class Actions {
                     if (this.target.uuid == wireframe.uuid) {
                         return;
                     }
-
+                    this.hit = hit;
                     this.target.visible = false;
                 }
 

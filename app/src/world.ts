@@ -67,4 +67,29 @@ export class World {
         pointer.position.z -= ((this.height/2) * this.cellHeight);
         scene.add(pointer);
     }
+
+    createBlock(THREE){
+        this.basic_block_geometry = new THREE.BoxGeometry(this.cellWidth,this.cellHeight,this.cellThickness);
+        let rgb = {
+            max: 1,
+            min: 0,
+        };
+        let r = Math.random() * (rgb.max - rgb.min) + rgb.min;
+        let g = Math.random() * (rgb.max - rgb.min) + rgb.min;
+        let b = Math.random() * (rgb.max - rgb.min) + rgb.min;
+        let color = new THREE.Color( r,g,b );
+
+        let cube = new THREE.Mesh(this.basic_block_geometry, new THREE.MeshBasicMaterial({ color: color}));
+
+        let frameScale = 1.01;
+        let cubeWireframe = new THREE.LineSegments(
+            new THREE.EdgesGeometry(this.basic_block_geometry.clone().scale(frameScale, frameScale, frameScale)),
+            new THREE.LineBasicMaterial({ color: 0x333333, linewidth: 2 })
+        );
+
+        cubeWireframe.visible = false;
+        cube.add(cubeWireframe);
+
+        return cube;
+    }
 }

@@ -26,7 +26,7 @@ world.setBoxSize(50,50,50);
 
 world.generate(THREE, scene);
 
-const actions = new Actions(THREE);
+const actions = new Actions(THREE, controls, world);
 
 function update() {
     controls.updateControls(clock);

@@ -7,7 +7,7 @@ export class Controls {
     private fpsObject: any;
     private pitchObject: any;
     private yawObject: any;
-    private isPointerLocked: boolean = false;
+    public isPointerLocked: boolean = false;
     private moveState: any = {
         left: false,
         right: false,
@@ -36,7 +36,7 @@ export class Controls {
 
     }
 
-    listeningPointerLock(e){
+    listeningPointerLock(){
         this.isPointerLocked = !this.isPointerLocked;
 
     }
@@ -46,8 +46,8 @@ export class Controls {
             const movementX = e.movementX;
             const movementY = e.movementY;
 
-            this.yawObject.rotation.y -= movementX * 0.002;
-            this.pitchObject.rotation.x -= movementY * 0.002;
+            this.yawObject.rotation.y -= movementX * 0.001;
+            this.pitchObject.rotation.x -= movementY * 0.001;
 
             this.pitchObject.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, this.pitchObject.rotation.x));
         }
