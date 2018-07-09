@@ -13,7 +13,7 @@ const renderer = new THREE.WebGLRenderer();
 const clock = new THREE.Clock();
 scene.background = new THREE.Color("rgb(66, 215, 244)");
 scene.fog = new THREE.Fog( new THREE.Color("rgb(66, 215, 244)"), 500,1000);
-camera.position.y = 70;
+
 renderer.setSize(window.innerWidth,window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
