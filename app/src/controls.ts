@@ -4,9 +4,10 @@ export class Controls {
     private THREE: any;
     private renderer: any;
     private mouseEvent: any;
-    private fpsObject: any;
     private pitchObject: any;
     private yawObject: any;
+    private hitboxObject: any;
+    private cubeSize : any ;
     public isPointerLocked: boolean = false;
     private moveState: any = {
         left: false,
@@ -14,22 +15,36 @@ export class Controls {
         up: false,
         down: false,
     };
-    constructor(scene: any, camera: any, THREE: any, renderer: any){
+    constructor(scene: any, camera: any, THREE: any, renderer: any, world: any){
         this.scene = scene;
         this.camera = camera;
         this.THREE = THREE;
         this.renderer = renderer;
-        this.fpsObject = new THREE.Object3D();
-        this.scene.add(this.fpsObject);
-        this.pitchObject = new THREE.Object3D();
+        this.cubeSize = {
+            width : world.cellWidth,
+            height : world.cellHeight
+        };
 
+        this.pitchObject = new THREE.Object3D();
         this.pitchObject.add(this.camera);
         this.yawObject = new THREE.Object3D();
 
-        this.yawObject.position.y = 10;
         this.yawObject.add(this.pitchObject);
-        this.fpsObject.add(this.yawObject);
+        this.scene.add(this.yawObject);
+        this.hitboxObject = new THREE.Object3D;
 
+        this.hitboxObject.width = this.cubeSize.width;
+        this.hitboxObject.height = this.cubeSize.height * 2;
+        this.hitboxObject.position.y = this.cubeSize.width;
+        this.yawObject.position.y = this.hitboxObject.position.y + (this.cubeSize.height * 1.5);
+        this.yawObject.position.x = this.hitboxObject.position.x + (this.cubeSize.width / 2);
+        this.yawObject.position.z = this.hitboxObject.position.x + (this.cubeSize.width / 2);
+        let testBlock = world.createBlock(THREE);
+        testBlock.position.y = this.hitboxObject.position.y;
+        testBlock.position.x = this.hitboxObject.position.x;
+        testBlock.position.z = this.hitboxObject.position.z;
+        this.hitboxObject.add(testBlock);
+        this.scene.add(this.hitboxObject);
         window.addEventListener('click',this.enablePointerLock.bind(this), false);
         window.addEventListener('keydown', this.enableMoveState.bind(this), false);
         window.addEventListener('keyup', this.disableMoveState.bind(this), false);
@@ -47,11 +62,13 @@ export class Controls {
 
             const movementX = e.movementX;
             const movementY = e.movementY;
-
             this.yawObject.rotation.y -= movementX * 0.001;
             this.pitchObject.rotation.x -= movementY * 0.001;
-
             this.pitchObject.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, this.pitchObject.rotation.x));
+
+            this.hitboxObject.rotation.y -= movementX * 0.001;
+            /*this.hitboxObject.rotation.x -= movementX * 0.001;
+            this.hitboxObject.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, this.hitboxObject.rotation.x));*/
         }
     }
     enablePointerLock(e){
@@ -136,6 +153,15 @@ export class Controls {
             this.yawObject.translateX(dir.x * delta * speed);
             this.yawObject.translateZ(dir.z * delta * speed);
 
+            this.hitboxObject.translateX(dir.x * delta * speed);
+            this.hitboxObject.translateZ(dir.z * delta * speed);
+
+            /*this.hitboxObject.position.x = this.yawObject.position.x;
+            this.hitboxObject.position.z = this.yawObject.position.z;*/
+
+            /*this.hitboxObject.rotation.y = this.pitchObject.rotation.x;
+            this.hitboxObject.rotation.x = this.yawObject.rotation.y;
+            this.hitboxObject.rotation.z = this.yawObject.rotation.z;*/
         }
 
 }

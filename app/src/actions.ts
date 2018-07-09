@@ -34,7 +34,6 @@ export class Actions {
         if(this.controls.isPointerLocked){
             switch(event.which) {
                 case 1 :
-                    console.log('ONE');
                     this.eraseBlock();
                     break;
                 case 3 :
@@ -45,8 +44,7 @@ export class Actions {
     }
 
     createBlock(){
-        console.log(this.hit);
-        console.log(this.hit.faceIndex);
+
         let cube = this.world.createBlock(this.THREE);
 
         switch( this.hit.faceIndex ){
@@ -95,7 +93,6 @@ export class Actions {
         if(this.blocksToRemove.length > 0 ){
             this.blocksToRemove.forEach((cube: any) => {
                scene.children.forEach((child) => {
-                   console.log(child);
                     child.remove(cube.object);
                });
             });
@@ -105,7 +102,6 @@ export class Actions {
             this.blocksToAdd.forEach((cube: object) =>{
                 scene.children.forEach((child) => {
                     if(child.children.length > 100) {
-                        console.log(child.children.length);
                         child.add(cube);
                     }
                 });
@@ -114,7 +110,8 @@ export class Actions {
             this.blocksToAdd = [];
         }
         this.raycaster.setFromCamera( new this.THREE.Vector2(), camera );
-        let blocks = scene.children[1].children;
+        let blocks = scene.children[0].children;
+
 
         if (blocks) {
             // calculate objects intersecting the picking ray
