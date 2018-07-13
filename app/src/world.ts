@@ -5,8 +5,22 @@ export class World {
     public cellHeight: number;
     public cellThickness: number;
     public basic_block_geometry: any;
+    public materials: {};
+    public texture_loader: any;
 
-    constructor(){
+    constructor(THREE: any){
+        this.texture_loader = new THREE.CubeTextureLoader();
+        // side of grass texture
+
+        const side_texture = 'img/grass_side.png';
+        const top_texture = 'img/grass_top.png';
+        const bottom_texture = 'img/dirt.png';
+        this.materials = this.texture_loader.load([
+            side_texture, side_texture,
+            top_texture, bottom_texture,
+            side_texture, side_texture
+        ]);
+
     }
 
     setGridSize (width: number, height: number) {
@@ -21,7 +35,8 @@ export class World {
     }
 
     generate(THREE : any, scene: any) {
-        this.basic_block_geometry = new THREE.BoxGeometry(this.cellWidth,this.cellHeight,this.cellThickness);
+        this.basic_block_geometry = new THREE.BoxGeometry(this.cellWidth, this.cellHeight, this.cellThickness);
+        console.log(this.basic_block_geometry);
         let pointer = new THREE.Object3D();
         let ArrayOfCubes = [];
 
@@ -29,30 +44,12 @@ export class World {
 
             let line = [];
             for(let WIndex = 0; WIndex < this.width; WIndex++) {
-                let rgb = {
-                    max: 1,
-                    min: 0,
-                };
-                let r = Math.random() * (rgb.max - rgb.min) + rgb.min;
-                let g = Math.random() * (rgb.max - rgb.min) + rgb.min;
-                let b = Math.random() * (rgb.max - rgb.min) + rgb.min;
-                let color = new THREE.Color( r,g,b );
-
-                let cube = new THREE.Mesh(this.basic_block_geometry, new THREE.MeshBasicMaterial({ color: color}));
-                cube.position.x = HIndex*this.cellWidth;
-                cube.position.z = WIndex*this.cellHeight;
-
-                let frameScale = 1.01;
-                let cubeWireframe = new THREE.LineSegments(
-                    new THREE.EdgesGeometry(this.basic_block_geometry.clone().scale(frameScale, frameScale, frameScale)),
-                    new THREE.LineBasicMaterial({ color: 0x333333, linewidth: 2 })
-                );
-
-                cubeWireframe.visible = false;
-                cube.add(cubeWireframe);
-
+                let cube = this.createBlock(THREE);
+                cube.position.x = HIndex * this.cellWidth;
+                cube.position.z = WIndex * this.cellHeight;
                 line.push(cube);
             }
+
             ArrayOfCubes.push(line);
 
         }
@@ -70,16 +67,10 @@ export class World {
 
     createBlock(THREE){
         this.basic_block_geometry = new THREE.BoxGeometry(this.cellWidth,this.cellHeight,this.cellThickness);
-        let rgb = {
-            max: 1,
-            min: 0,
-        };
-        let r = Math.random() * (rgb.max - rgb.min) + rgb.min;
-        let g = Math.random() * (rgb.max - rgb.min) + rgb.min;
-        let b = Math.random() * (rgb.max - rgb.min) + rgb.min;
-        let color = new THREE.Color( r,g,b );
 
-        let cube = new THREE.Mesh(this.basic_block_geometry, new THREE.MeshBasicMaterial({ color: color}));
+        let cube = new THREE.Mesh(this.basic_block_geometry, new THREE.MeshBasicMaterial({
+            color: 0xffffff, envMap: this.materials
+        }));
 
         let frameScale = 1.01;
         let cubeWireframe = new THREE.LineSegments(

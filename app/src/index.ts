@@ -18,9 +18,9 @@ renderer.setSize(window.innerWidth,window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 
-const world = new World.World();
+const world = new World.World(THREE);
 world.setGridSize(100,100);
-world.setBoxSize(50,50,50);
+world.setBoxSize(16,16,16);
 world.generate(THREE, scene);
 
 const controls = new Controls(scene,camera,THREE,renderer, world);
