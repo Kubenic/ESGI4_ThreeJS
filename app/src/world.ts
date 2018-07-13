@@ -5,22 +5,34 @@ export class World {
     public cellHeight: number;
     public cellThickness: number;
     public basic_block_geometry: any;
-    public materials: {};
-    public texture_loader: any;
+    public material: any;
 
     constructor(THREE: any){
-        this.texture_loader = new THREE.CubeTextureLoader();
-        // side of grass texture
+        const texture_loader = new THREE.TextureLoader();
 
-        const side_texture = 'img/grass_side.png';
-        const top_texture = 'img/grass_top.png';
-        const bottom_texture = 'img/dirt.png';
-        this.materials = this.texture_loader.load([
-            side_texture, side_texture,
-            top_texture, bottom_texture,
-            side_texture, side_texture
-        ]);
+        const side_texture_string = 'img/grass_side.png';
+        const side_texture = texture_loader.load(side_texture_string);
+        side_texture.magFilter = THREE.NearestFilter;
+        side_texture.minFilter = THREE.LinearMipMapLinearFilter;
 
+        const top_texture_string = 'img/grass_top.png';
+        const top_texture = texture_loader.load(top_texture_string);
+        top_texture.magFilter = THREE.NearestFilter;
+        top_texture.minFilter = THREE.LinearMipMapLinearFilter;
+
+        const bottom_texture_string = 'img/dirt.png';
+        const bottom_texture = texture_loader.load(bottom_texture_string);
+        bottom_texture.magFilter = THREE.NearestFilter;
+        bottom_texture.minFilter = THREE.LinearMipMapLinearFilter;
+
+        this.material = [
+            new THREE.MeshBasicMaterial({map: side_texture}),
+            new THREE.MeshBasicMaterial({map: side_texture}),
+            new THREE.MeshBasicMaterial({map: top_texture}),
+            new THREE.MeshBasicMaterial({map: bottom_texture}),
+            new THREE.MeshBasicMaterial({map: side_texture}),
+            new THREE.MeshBasicMaterial({map: side_texture}),
+        ];
     }
 
     setGridSize (width: number, height: number) {
@@ -51,7 +63,6 @@ export class World {
             }
 
             ArrayOfCubes.push(line);
-
         }
 
         ArrayOfCubes.forEach((elem) => {
@@ -68,10 +79,7 @@ export class World {
     createBlock(THREE){
         this.basic_block_geometry = new THREE.BoxGeometry(this.cellWidth,this.cellHeight,this.cellThickness);
 
-        let cube = new THREE.Mesh(this.basic_block_geometry, new THREE.MeshBasicMaterial({
-            color: 0xffffff, envMap: this.materials
-        }));
-
+        let cube = new THREE.Mesh(this.basic_block_geometry, this.material);
         let frameScale = 1.01;
         let cubeWireframe = new THREE.LineSegments(
             new THREE.EdgesGeometry(this.basic_block_geometry.clone().scale(frameScale, frameScale, frameScale)),
