@@ -33,16 +33,23 @@ export class Controls {
         this.scene.add(this.yawObject);
         this.hitboxObject = new THREE.Object3D;
 
-        this.hitboxObject.width = this.cubeSize.width;
-        this.hitboxObject.height = this.cubeSize.height * 2;
-        this.hitboxObject.position.y = this.cubeSize.width;
+        this.hitboxObject.width = this.cubeSize.width +5;
+        this.hitboxObject.height = (this.cubeSize.height * 2) +5;
         this.yawObject.position.y = this.hitboxObject.position.y + (this.cubeSize.height * 1.5);
-        this.yawObject.position.x = this.hitboxObject.position.x + (this.cubeSize.width / 2);
-        this.yawObject.position.z = this.hitboxObject.position.x + (this.cubeSize.width / 2);
+        this.yawObject.position.x = this.hitboxObject.position.x;
+        this.yawObject.position.z = this.hitboxObject.position.z;
+
+        this.camera.position.x =  this.yawObject.position.x;
+        this.camera.position.z =  15;
+
+        console.log(this.camera.position);
+
         let testBlock = world.createBlock(THREE);
+        console.log(this.hitboxObject.position);
         testBlock.position.y = this.hitboxObject.position.y;
         testBlock.position.x = this.hitboxObject.position.x;
         testBlock.position.z = this.hitboxObject.position.z;
+        console.log(testBlock.position);
         this.hitboxObject.add(testBlock);
         this.scene.add(this.hitboxObject);
         window.addEventListener('click',this.enablePointerLock.bind(this), false);
@@ -57,7 +64,7 @@ export class Controls {
 
     }
     mouseTracker(e){
-        e.preventDefault();
+
         if(this.isPointerLocked){
 
             const movementX = e.movementX;
@@ -67,8 +74,7 @@ export class Controls {
             this.pitchObject.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, this.pitchObject.rotation.x));
 
             this.hitboxObject.rotation.y -= movementX * 0.001;
-            /*this.hitboxObject.rotation.x -= movementX * 0.001;
-            this.hitboxObject.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, this.hitboxObject.rotation.x));*/
+
         }
     }
     enablePointerLock(e){
@@ -150,18 +156,11 @@ export class Controls {
             dir.normalize();
             const speed = 300;
 
-            this.yawObject.translateX(dir.x * delta * speed);
-            this.yawObject.translateZ(dir.z * delta * speed);
-
             this.hitboxObject.translateX(dir.x * delta * speed);
             this.hitboxObject.translateZ(dir.z * delta * speed);
 
-            /*this.hitboxObject.position.x = this.yawObject.position.x;
-            this.hitboxObject.position.z = this.yawObject.position.z;*/
-
-            /*this.hitboxObject.rotation.y = this.pitchObject.rotation.x;
-            this.hitboxObject.rotation.x = this.yawObject.rotation.y;
-            this.hitboxObject.rotation.z = this.yawObject.rotation.z;*/
+            this.yawObject.translateX(dir.x * delta * speed);
+            this.yawObject.translateZ(dir.z * delta * speed);
         }
 
 }
