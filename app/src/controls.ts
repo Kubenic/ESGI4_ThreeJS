@@ -39,28 +39,33 @@ export class Controls {
         this.yawObject.position.x = this.hitboxObject.position.x;
         this.yawObject.position.z = this.hitboxObject.position.z;
 
+        //this.camera.position.y = this.hitboxObject.position.y;
         this.camera.position.x =  this.yawObject.position.x;
         this.camera.position.z =  15;
 
-        console.log(this.camera.position);
 
         let testBlock = world.createBlock(THREE);
-        console.log(this.hitboxObject.position);
         testBlock.position.y = this.hitboxObject.position.y;
         testBlock.position.x = this.hitboxObject.position.x;
         testBlock.position.z = this.hitboxObject.position.z;
-        console.log(testBlock.position);
         this.hitboxObject.add(testBlock);
         this.scene.add(this.hitboxObject);
         window.addEventListener('click',this.enablePointerLock.bind(this), false);
+        //document.body.addEventListener('focusout',this.disablePointerLock.bind(this), false);
         window.addEventListener('keydown', this.enableMoveState.bind(this), false);
         window.addEventListener('keyup', this.disableMoveState.bind(this), false);
 
+        this.mouseEvent = window.addEventListener('mousemove', this.mouseTracker.bind(this), false);
     }
 
     listeningPointerLock(e){
         e.preventDefault();
-        this.isPointerLocked = !this.isPointerLocked;
+        if(document.hasFocus()){
+            this.isPointerLocked = true;
+        }else{
+            document.exitPointerLock();
+            this.isPointerLocked = false;
+        }
 
     }
     mouseTracker(e){
@@ -77,13 +82,15 @@ export class Controls {
 
         }
     }
+
     enablePointerLock(e){
         e.preventDefault();
-        this.renderer.domElement.requestPointerLock();
         document.addEventListener('pointerlockchange', this.listeningPointerLock.bind(this), false);
         document.addEventListener('mozpointerlockchange', this.listeningPointerLock.bind(this), false);
         document.addEventListener('webkitpointerlockchange', this.listeningPointerLock.bind(this), false);
-        this.mouseEvent = window.addEventListener('mousemove', this.mouseTracker.bind(this), false);
+        this.renderer.domElement.requestPointerLock();
+
+
     }
 
     enableMoveState(e){

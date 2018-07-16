@@ -31,14 +31,16 @@ export class Actions {
 
     onMouseClick( event ) {
         event.preventDefault();
-        if(this.controls.isPointerLocked){
-            switch(event.which) {
-                case 1 :
-                    this.eraseBlock();
-                    break;
-                case 3 :
-                    this.createBlock();
-                    break;
+        if(document.hasFocus()){
+            if(this.controls.isPointerLocked){
+                switch(event.which) {
+                    case 1 :
+                        this.eraseBlock();
+                        break;
+                    case 3 :
+                        this.createBlock();
+                        break;
+                }
             }
         }
     }

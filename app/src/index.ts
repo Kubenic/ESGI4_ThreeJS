@@ -12,14 +12,14 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth /window.innerHe
 const renderer = new THREE.WebGLRenderer();
 const clock = new THREE.Clock();
 scene.background = new THREE.Color("rgb(66, 215, 244)");
-scene.fog = new THREE.Fog( new THREE.Color("rgb(66, 215, 244)"), 500,1000);
+scene.fog = new THREE.Fog( new THREE.Color("rgb(66, 215, 244)"), 200,500);
 
 renderer.setSize(window.innerWidth,window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 
 const world = new World.World(THREE);
-world.setGridSize(100,100);
+world.setGridSize(15,15);
 world.setBoxSize(16,16,16);
 world.generate(THREE, scene);
 

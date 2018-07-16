@@ -5,9 +5,11 @@ export class World {
     public cellHeight: number;
     public cellThickness: number;
     public basic_block_geometry: any;
+    public basicCube: any;
     public material: any;
 
     constructor(THREE: any){
+        this.basic_block_geometry = new THREE.BoxGeometry(this.cellWidth,this.cellHeight,this.cellThickness);
         const texture_loader = new THREE.TextureLoader();
 
         const side_texture_string = 'img/grass_side.png';
@@ -33,6 +35,8 @@ export class World {
             new THREE.MeshBasicMaterial({map: side_texture}),
             new THREE.MeshBasicMaterial({map: side_texture}),
         ];
+
+        this.basicCube = new THREE.Mesh(this.basic_block_geometry, this.material);
     }
 
     setGridSize (width: number, height: number) {
@@ -77,7 +81,7 @@ export class World {
     }
 
     createBlock(THREE){
-        this.basic_block_geometry = new THREE.BoxGeometry(this.cellWidth,this.cellHeight,this.cellThickness);
+
 
         let cube = new THREE.Mesh(this.basic_block_geometry, this.material);
         let frameScale = 1.01;
