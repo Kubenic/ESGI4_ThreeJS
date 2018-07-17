@@ -19,7 +19,7 @@ document.body.appendChild(renderer.domElement);
 
 
 const world = new World.World(THREE);
-world.setGridSize(15,15);
+world.setGridSize(20,20);
 world.setBoxSize(16,16,16);
 world.generate(THREE, scene);
 
@@ -28,7 +28,7 @@ const controls = new Controls(scene,camera,THREE,renderer, world);
 const actions = new Actions(THREE, controls, world);
 
 function update() {
-    controls.updateControls(clock);
+    controls.updateControls(clock, scene);
     actions.update(camera,scene);
 }
 

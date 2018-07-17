@@ -39,17 +39,19 @@ export class Controls {
         this.yawObject.position.x = this.hitboxObject.position.x;
         this.yawObject.position.z = this.hitboxObject.position.z;
 
-        //this.camera.position.y = this.hitboxObject.position.y;
+        this.camera.position.y = this.hitboxObject.position.y + (this.cubeSize.height / 2);
         this.camera.position.x =  this.yawObject.position.x;
         this.camera.position.z =  15;
 
 
         let testBlock = world.createBlock(THREE);
-        testBlock.position.y = this.hitboxObject.position.y;
+        testBlock.position.y = this.hitboxObject.position.y - this.cubeSize.height * 2;
         testBlock.position.x = this.hitboxObject.position.x;
         testBlock.position.z = this.hitboxObject.position.z;
         this.hitboxObject.add(testBlock);
         this.scene.add(this.hitboxObject);
+        console.log(this.hitboxObject.children[0]);
+
         window.addEventListener('click',this.enablePointerLock.bind(this), false);
         //document.body.addEventListener('focusout',this.disablePointerLock.bind(this), false);
         window.addEventListener('keydown', this.enableMoveState.bind(this), false);
@@ -142,9 +144,11 @@ export class Controls {
                 break;
         }}
 
-        updateControls(clock: any){
+        updateControls(clock: any, scene: any){
             let delta = clock.getDelta();
             let dir = new this.THREE.Vector3();
+            let raycaster = new this.THREE.Raycaster();
+
 
             if(this.moveState.up) {
                 dir.z -= 10;
@@ -160,14 +164,23 @@ export class Controls {
                 dir.x += 10;
             }
 
-            dir.normalize();
             const speed = 300;
+            dir.normalize();
 
-            this.hitboxObject.translateX(dir.x * delta * speed);
-            this.hitboxObject.translateZ(dir.z * delta * speed);
+            this.hitboxObject.translateX(dir.x * delta * speed );
+            this.hitboxObject.translateZ(dir.z * delta * speed );
+            let origin = new this.THREE.Vector3(this.yawObject.position.x,10,this.yawObject.position.z);
+            let direction = new this.THREE.Vector3(this.hitboxObject.position.x,10,this.hitboxObject.position.z);
 
-            this.yawObject.translateX(dir.x * delta * speed);
-            this.yawObject.translateZ(dir.z * delta * speed);
+
+            let RayDectetor = new this.THREE.Raycaster(origin, direction, 0, 100);
+            console.log(RayDectetor);
+            let moveInterSect = RayDectetor.intersectObjects(scene.children[0].children);
+            if(moveInterSect.length[0]){
+                console.log(moveInterSect);
+            }
+            this.yawObject.translateX(dir.x * delta * speed );
+            this.yawObject.translateZ(dir.z * delta * speed );
         }
 
 }

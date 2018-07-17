@@ -15,6 +15,7 @@ export class Actions {
         this.raycaster = new this.THREE.Raycaster();
         this.mouse = new this.THREE.Vector2();
         this.world = world;
+        this.hit = false;
         window.addEventListener('mousemove',this.onMouseMove.bind(this),false);
         window.addEventListener('click',this.onMouseClick.bind(this), false)
     }
@@ -31,6 +32,7 @@ export class Actions {
 
     onMouseClick( event ) {
         event.preventDefault();
+        console.log("ACTION ---  " + document.hasFocus());
         if(document.hasFocus()){
             if(this.controls.isPointerLocked){
                 switch(event.which) {
@@ -48,37 +50,38 @@ export class Actions {
     createBlock(){
 
         let cube = this.world.createBlock(this.THREE);
-
-        switch( this.hit.faceIndex ){
-            case 0 :
-            case 1 :
-                cube.position.x = this.hit.object.position.x + this.hit.object.geometry.parameters.width;
-                cube.position.z = this.hit.object.position.z ;
-                cube.position.y = this.hit.object.position.y ;
-                break;
-            case 2 :
-            case 3 :
-                cube.position.x = this.hit.object.position.x - this.hit.object.geometry.parameters.width;
-                cube.position.z = this.hit.object.position.z ;
-                cube.position.y = this.hit.object.position.y ;
-                break;
-            case 4 :
-            case 5 :
-                cube.position.x = this.hit.object.position.x ;
-                cube.position.z = this.hit.object.position.z ;
-                cube.position.y = this.hit.object.position.y + this.hit.object.geometry.parameters.height;
-                break;
-            case 8 :
-            case 9 :
-                cube.position.x = this.hit.object.position.x ;
-                cube.position.z = this.hit.object.position.z  + this.hit.object.geometry.parameters.width;
-                cube.position.y = this.hit.object.position.y ;
-                break;
-            case 10 :
-            case 11 :
-                cube.position.x = this.hit.object.position.x ;
-                cube.position.z = this.hit.object.position.z  - this.hit.object.geometry.parameters.width;
-                cube.position.y = this.hit.object.position.y ;
+        if(this.hit.faceIndex){
+            switch( this.hit.faceIndex ){
+                case 0 :
+                case 1 :
+                    cube.position.x = this.hit.object.position.x + this.hit.object.geometry.parameters.width;
+                    cube.position.z = this.hit.object.position.z ;
+                    cube.position.y = this.hit.object.position.y ;
+                    break;
+                case 2 :
+                case 3 :
+                    cube.position.x = this.hit.object.position.x - this.hit.object.geometry.parameters.width;
+                    cube.position.z = this.hit.object.position.z ;
+                    cube.position.y = this.hit.object.position.y ;
+                    break;
+                case 4 :
+                case 5 :
+                    cube.position.x = this.hit.object.position.x ;
+                    cube.position.z = this.hit.object.position.z ;
+                    cube.position.y = this.hit.object.position.y + this.hit.object.geometry.parameters.height;
+                    break;
+                case 8 :
+                case 9 :
+                    cube.position.x = this.hit.object.position.x ;
+                    cube.position.z = this.hit.object.position.z  + this.hit.object.geometry.parameters.width;
+                    cube.position.y = this.hit.object.position.y ;
+                    break;
+                case 10 :
+                case 11 :
+                    cube.position.x = this.hit.object.position.x ;
+                    cube.position.z = this.hit.object.position.z  - this.hit.object.geometry.parameters.width;
+                    cube.position.y = this.hit.object.position.y ;
+            }
         }
 
         this.blocksToAdd.push(cube);
@@ -107,7 +110,6 @@ export class Actions {
                         child.add(cube);
                     }
                 });
-
             });
             this.blocksToAdd = [];
         }
@@ -123,16 +125,22 @@ export class Actions {
                 let wireframe = hit.object.children[0];
 
                 //If the targeted wireframe is the same as the last, return
-                if (this.target) {
-                    if (this.target.uuid == wireframe.uuid && hit.faceIndex === this.hit.faceIndex) {
-                        return;
-                    }
-                    this.hit = hit;
-                    this.target.visible = false;
-                }
 
-                wireframe.visible = true;
-                this.target = wireframe;
+
+                if(hit.faceIndex && this.hit){
+                    if (this.target) {
+                        if (this.target.uuid == wireframe.uuid && hit.faceIndex === this.hit.faceIndex) {
+                            return;
+                        }
+                        this.hit = hit;
+                        this.target.visible = false;
+                    }
+
+                    wireframe.visible = true;
+                    this.target = wireframe;
+                }else{
+                    this.hit = hit;
+                }
             }
         }
     }

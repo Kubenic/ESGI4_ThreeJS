@@ -52,18 +52,30 @@ export class World {
 
     generate(THREE : any, scene: any) {
         this.basic_block_geometry = new THREE.BoxGeometry(this.cellWidth, this.cellHeight, this.cellThickness);
-        console.log(this.basic_block_geometry);
         let pointer = new THREE.Object3D();
         let ArrayOfCubes = [];
+        let noise = [];
+
+        for(let i = 0; i < this.height; i++){
+            let line = [];
+            for(let j = 0; j < this.width; j++){
+                line.push(Math.round((Math.floor(Math.random() * 2) + 1)  ))
+            }
+            noise.push(line);
+        }
 
         for(let HIndex = 0; HIndex < this.height; HIndex++) {
 
             let line = [];
             for(let WIndex = 0; WIndex < this.width; WIndex++) {
-                let cube = this.createBlock(THREE);
-                cube.position.x = HIndex * this.cellWidth;
-                cube.position.z = WIndex * this.cellHeight;
-                line.push(cube);
+                for(let y = 0; y < noise[HIndex][WIndex]; y ++){
+                    let cube = this.createBlock(THREE);
+                    cube.position.x = HIndex * this.cellWidth;
+                    cube.position.z = WIndex * this.cellHeight;
+                    cube.position.y = this.cellHeight * y;
+                    line.push(cube);
+                }
+
             }
 
             ArrayOfCubes.push(line);
