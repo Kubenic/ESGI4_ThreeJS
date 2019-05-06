@@ -1,7 +1,7 @@
 const WebpackShellPlugin = require('webpack-shell-plugin');
 const path = require('path');
 
-var plugins = [];
+let plugins = [];
 
 plugins.push(new WebpackShellPlugin({
     onBuildStart: ['echo "Starting"'],
@@ -14,6 +14,10 @@ let config = {
     output: {
         path: path.resolve(__dirname, "app/dist"),
         filename: "index.js"
+    },
+    resolve: {
+        // Add `.ts` and `.tsx` as a resolvable extension.
+        extensions: [".ts", ".js"]
     },
     plugins: plugins,
     module: {
